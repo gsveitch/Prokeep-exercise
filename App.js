@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
  
 export default function App() {
@@ -34,16 +35,24 @@ export default function App() {
   }, [password]);
 
   const submitLogin = (email, password) => {
+    const creds = { email, password };
+    const body = Object.keys(creds)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(creds[key])}`).join('&');
     return fetch('https://reqres.in/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
-      body: new URLSearchParams({ email, password })
+      body,
     })
       .then((respose) => respose.json())
       .then((json) => {
         console.log('response is:', json);
+        Alert.alert(
+          'Response',
+          json.token ? `Successful Login!\nToken is: ${json.token}` : `${json.error}\n(psst.. try "eve.holt@reqres.in")`,
+          [{ text: 'OK', onPress: () => null }],
+        );
       })
       .catch((error) => console.log(error));
   }
