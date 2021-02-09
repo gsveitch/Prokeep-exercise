@@ -6,9 +6,10 @@ import {
   View,
   Image,
   Dimensions,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
  
 export default function App() {
@@ -51,7 +52,11 @@ export default function App() {
         Alert.alert(
           'Response',
           json.token ? `Successful Login!\nToken is: ${json.token}` : `${json.error}\n(psst.. try "eve.holt@reqres.in")`,
-          [{ text: 'OK', onPress: () => null }],
+          json.token ? [{ text: 'Huzzah!', onPress: () => null }] : 
+          [
+            { text: 'no thanks', onPress: () => null },
+            { text: 'Okay!', onPress: () => setEmail('eve.holt@reqres.in') },
+          ],
         );
       })
       .catch((error) => console.log(error));
@@ -59,13 +64,14 @@ export default function App() {
 
  
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <Image source={logo} style={styles.logo} />
       <View style={styles.form}>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>email</Text>
           <TextInput
             style={styles.input}
+            value={email}
             placeholder='enter email...'
             placeholderTextColor='grey'
             autoCompleteType='email'
@@ -105,31 +111,31 @@ export default function App() {
         </View>
         {validateEmail(email) && password.length ?
           (
-            <TouchableOpacity
-              onPress={() => submitLogin(email, password)}
+            <Pressable
+              onPressOut={() => submitLogin(email, password)}
               style={styles.button}
+              android_ripple={{ color: '#ffd286'}}
             >
-              <Text>Log In</Text>
-            </TouchableOpacity>
+              <Text style={{ color: '#132c41' }}>Log In</Text>
+            </Pressable>
           )
           :
           (
-            <TouchableOpacity
-              onPress={() => {
+            <Pressable
+              onPressOut={() => {
                 setShowEmailAlert(!validateEmail(email));
                 setShowPasswordAlert(!password.length);
               }}
               style={[styles.button, styles.disabled]}
+              android_ripple={{ color: '#android_ripple'}}
             >
-              <Text>Log In</Text>
-            </TouchableOpacity>
+              <Text style={{ color: 'grey' }}>Log In</Text>
+            </Pressable>
           )
         }
-        
-          
       </View>
       <Text style={styles.slogan}>Keep your communications flowing... and business growing.</Text>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 const windowWidth = Dimensions.get('window').width;
@@ -167,7 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   disabled: {
-    opacity: .5,
+    backgroundColor: '#9bd3d5',
   },
   form: {
     padding: 20,
