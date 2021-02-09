@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './assets/logo+name.png';
 import {
   StyleSheet,
@@ -13,6 +13,27 @@ import {
 export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showEmailAlert, setShowEmailAlert] = useState(false);
+  const [showPasswordAlert, setShowPasswordAlert] = useState(false);
+
+  const validateEmail = (email) => {
+    const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log('reg test is:', reg.test(String(email).toLowerCase()));
+    return reg.test(String(email).toLowerCase());
+  }
+
+  useEffect(() => {
+    if (showEmailAlert) {
+      setShowEmailAlert(!validateEmail(email))
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (showPasswordAlert) {
+      setShowPasswordAlert(!password.length)
+    }
+  }, [password]);
+
  
   return (
     <View style={styles.container}>
@@ -27,11 +48,16 @@ export default function App() {
             autoCompleteType='email'
             textContentType='emailAddress'
             autoCorrect={false}
-            onFocus={()=>{console.log('onFocus()')}}
-            onChangeText={(text)=>{console.log('onChangeText:', text)}}
-            onEndEditing={()=>{console.log('onEndEditing()')}}
-            onBlur={()=>{console.log('onBlur()')}}
+            onChangeText={(text) => setEmail(text)}
+            onBlur={() => setShowEmailAlert(!validateEmail(email))}
           />
+          <View style={styles.alert}>
+            {showEmailAlert && (
+              <Text style={styles.alertText}>
+                *** invalid email address ***
+              </Text>
+            )}
+          </View>
         </View>
         <View style={styles.inputContainer}>
         <Text style={styles.label}>password</Text>
@@ -43,18 +69,41 @@ export default function App() {
             autoCompleteType='password'
             textContentType='password'
             autoCorrect={false}
-            onFocus={()=>{console.log('onFocus()')}}
-            onChangeText={(text)=>{console.log('onChangeText:', text)}}
-            onEndEditing={()=>{console.log('onEndEditing()')}}
-            onBlur={()=>{console.log('onBlur()')}}
+            onChangeText={(text) => setPassword(text)}
+            onBlur={() => setShowPasswordAlert(!password.length)}
           />
+          <View style={styles.alert}>
+            {showPasswordAlert && (
+              <Text style={styles.alertText}>
+                *** password must be at least one character long ***
+              </Text>
+            )}
+          </View>
         </View>
-        <TouchableOpacity
-          onPress={() => console.log('pressed')}
-          style={styles.button}
-        >
-          <Text>Log In</Text>
-        </TouchableOpacity>
+        {validateEmail(email) && password.length ?
+          (
+            <TouchableOpacity
+              onPress={() => console.log('pressed')}
+              style={styles.button}
+            >
+              <Text>Log In</Text>
+            </TouchableOpacity>
+          )
+          :
+          (
+            <TouchableOpacity
+              onPress={() => {
+                setShowEmailAlert(!validateEmail(email));
+                setShowPasswordAlert(!password.length);0
+              }}
+              style={[styles.button, styles.disabled]}
+            >
+              <Text>Log In</Text>
+            </TouchableOpacity>
+          )
+        }
+        
+          
       </View>
       <Text style={styles.slogan}>Keep your communications flowing... and business growing.</Text>
     </View>
@@ -94,6 +143,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  disabled: {
+    opacity: .5,
+  },
   form: {
     padding: 20,
     backgroundColor: '#2b7990',
@@ -111,5 +163,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     padding: 5,
+    marginVertical: 5,
+  },
+  alert: {
+    height: 10,
+  },
+  alertText: {
+    color: 'red',
+    fontSize: 10,
   }
 });
