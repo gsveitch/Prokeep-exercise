@@ -70,6 +70,7 @@ export default function App() {
         <View style={styles.inputContainer}>
           <Text style={styles.label}>email</Text>
           <TextInput
+            testID='email-input'
             style={styles.input}
             value={email}
             placeholder='enter email...'
@@ -91,6 +92,7 @@ export default function App() {
         <View style={styles.inputContainer}>
         <Text style={styles.label}>password</Text>
           <TextInput
+            testID='pw-input'
             style={styles.input}
             secureTextEntry
             placeholder='enter password...'
@@ -112,6 +114,7 @@ export default function App() {
         {validateEmail(email) && password.length ?
           (
             <Pressable
+              testID='enabled-button'
               onPressOut={() => submitLogin(email, password)}
               style={styles.button}
               android_ripple={{ color: '#ffd286'}}
@@ -122,6 +125,7 @@ export default function App() {
           :
           (
             <Pressable
+              testID='disabled-button'
               onPressOut={() => {
                 setShowEmailAlert(!validateEmail(email));
                 setShowPasswordAlert(!password.length);
