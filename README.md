@@ -22,7 +22,4 @@ Expo developer tools should open in your browser. If you have and Android or iOS
 
  Best yet, download the Expo Go app from [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en_US&gl=US) or [iOS App store](https://apps.apple.com/in/app/expo-go/id982107779) and then scan the QR code to run it on your own device.
 
- OR you can just give it a spin right here!
-
- <div data-snack-id="@gsveitch/prokeep-exercise" data-snack-platform="web" data-snack-preview="true" data-snack-theme="light" style="overflow:hidden;background:#F9F9F9;border:1px solid var(--color-border);border-radius:4px;height:505px;width:100%"></div>
-<script async src="https://snack.expo.io/embed.js"></script>
+ [OR you can just give it a spin right here!](https://snack.expo.io/@gsveitch/prokeep-exercise)
