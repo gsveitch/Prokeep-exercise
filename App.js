@@ -18,7 +18,6 @@ export default function App() {
 
   const validateEmail = (email) => {
     const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    console.log('reg test is:', reg.test(String(email).toLowerCase()));
     return reg.test(String(email).toLowerCase());
   }
 
@@ -33,6 +32,21 @@ export default function App() {
       setShowPasswordAlert(!password.length)
     }
   }, [password]);
+
+  const submitLogin = (email, password) => {
+    return fetch('https://reqres.in/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: new URLSearchParams({ email, password })
+    })
+      .then((respose) => respose.json())
+      .then((json) => {
+        console.log('response is:', json);
+      })
+      .catch((error) => console.log(error));
+  }
 
  
   return (
@@ -83,7 +97,7 @@ export default function App() {
         {validateEmail(email) && password.length ?
           (
             <TouchableOpacity
-              onPress={() => console.log('pressed')}
+              onPress={() => submitLogin(email, password)}
               style={styles.button}
             >
               <Text>Log In</Text>
@@ -94,7 +108,7 @@ export default function App() {
             <TouchableOpacity
               onPress={() => {
                 setShowEmailAlert(!validateEmail(email));
-                setShowPasswordAlert(!password.length);0
+                setShowPasswordAlert(!password.length);
               }}
               style={[styles.button, styles.disabled]}
             >
@@ -129,8 +143,8 @@ const styles = StyleSheet.create({
   logo: {
     width: windowWidth * 0.7,
     height: windowWidth * 0.145,
-    borderWidth: 2,
-    borderColor: 'green',
+    // borderWidth: 2,
+    // borderColor: 'green',
   },
   button: {
     backgroundColor: '#f3b64e',
